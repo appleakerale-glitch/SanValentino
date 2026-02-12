@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>💘 San Valentino 💘</title>
+  <style>
+    :root{
+      --bg1:#ff7aa2;
+      --bg2:#ff3b6e;
+      --card:#ffffffee;
+      --text:#151517;
+      --yes:#ff2d55;
+      --no:#111827;
+      --shadow: 0 18px 60px rgba(0,0,0,.22);
+      --r: 22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(900px 500px at 20% 10%, #fff4, transparent 60%),
+        radial-gradient(700px 400px at 80% 30%, #fff3, transparent 60%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      color:var(--text);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .card{
+      width:min(720px, 92vw);
+      background:var(--card);
+      border:1px solid #ffffff80;
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 28px 22px;
+      backdrop-filter: blur(10px);
+      position:relative;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:linear-gradient(135deg,#fff,#fff0);
+      border:1px solid #00000012;
+      font-weight:700;
+      margin-bottom:14px;
+    }
+
+    h1{
+      margin:0;
+      font-size: clamp(26px, 4.5vw, 44px);
+      letter-spacing:-0.02em;
+      line-height:1.08;
+    }
+    p{
+      margin:10px 0 0 0;
+      color:#3a3a3c;
+      font-size: clamp(14px, 2.6vw, 17px);
+      line-height:1.35;
+    }
+
+    .arena{
+      margin-top:18px;
+      border-radius: 18px;
+      border:1px solid #00000010;
+      background:#ffffffb5;
+      padding:18px;
+      min-height: 170px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .btns{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      position:relative;
+      min-height:64px; /* così quando NO diventa absolute non rompe layout */
+    }
+
+    button{
+      font:inherit;
+      border:0;
+      border-radius:999px;
+      padding:12px 18px;
+      cursor:pointer;
+      font-weight:900;
+      transition: transform .12s ease, filter .12s ease;
+      user-select:none;
+      white-space:nowrap;
+      touch-action: manipulation; /* aiuta su mobile */
+    }
+    button:active{transform: translateY(1px) scale(.99)}
+
+    /* IMPORTANT: su iPhone il NO non deve mai "coprire" il SI */
+    .yes{
+      position:relative;
+      z-index: 5;
+      background:linear-gradient(135deg,var(--yes),#ff7aa2);
+      color:#fff;
+    }
+    .yes:hover{filter:brightness(1.03)}
+    .no{
+      position:relative;
+      z-index: 3;
+      background:linear-gradient(135deg,var(--no),#374151);
+      color:#fff;
+    }
+
+    .hint{
+      margin-top:10px;
+      font-size:13px;
+      color:#6b7280;
+    }
+
+    /* Success screen */
+    .success{
+      display:none;
+      text-align:center;
+      padding: 26px 10px 10px;
+    }
+    .big{
+      font-size: clamp(46px, 7vw, 76px);
+      margin: 0;
+      letter-spacing:-0.03em;
+    }
+    .love{
+      font-size: clamp(18px, 3vw, 22px);
+      margin-top: 10px;
+      color:#262626;
+      font-weight:800;
+    }
+    .mini{
+      margin-top:10px;
+      color:#3a3a3c;
+      font-size: 16px;
+      line-height:1.4;
+    }
+    .cta{
+      margin-top:16px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .ghost{
+      background:#fff;
+      border:1px solid #00000012;
+      color:#111827;
+      font-weight:800;
+    }
+
+    /* Falling hearts */
+    .hearts{
+      position:fixed; inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.15));
+    }
+    .heart{
+      position:absolute;
+      top:-10vh;
+      width:16px; height:16px;
+      transform: rotate(45deg);
+      opacity:.9;
+      animation: fall linear forwards;
+    }
+    .heart:before,.heart:after{
+      content:"";
+      position:absolute;
+      width:16px;height:16px;
+      border-radius:50%;
+      background:inherit;
+    }
+    .heart:before{left:-8px}
+    .heart:after{top:-8px}
+    @keyframes fall{
+      to{ transform: translateY(120vh) rotate(45deg); opacity:.05; }
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform: translateX(-50%);
+      background:#111827;
+      color:#fff;
+      padding:10px 12px;
+      border-radius:12px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.25);
+      opacity:0;
+      pointer-events:none;
+      transition:.2s ease;
+      max-width:min(520px, 92vw);
+      font-weight:700;
+    }
+    .toast.show{opacity:1; transform: translateX(-50%) translateY(-4px)}
+  </style>
+</head>
+
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="card" id="card">
+    <div class="badge">💌 Speciale San Valentino</div>
+
+    <!-- QUESTION -->
+    <div id="question">
+      <h1 id="qTitle">Ciao Katiuscia, vuoi essere la mia San Valentina? 💘</h1>
+      <p>Rispondi con sincerità… tanto il “NO” non collabora 😇</p>
+
+      <div class="arena" id="arena">
+        <div class="btns" id="btns">
+          <button class="yes" id="btnYes">SÌ 💘</button>
+          <button class="no" id="btnNo">NO 🙈</button>
+        </div>
+        <div class="hint">Prova a cliccare “NO” se ci riesci 😈</div>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success" id="success">
+      <h2 class="big">TI AMO ❤️</h2>
+      <div class="love">E ora sei ufficialmente la mia San Valentina 🥹</div>
+      <div class="mini" id="extra">
+        Promemoria importante: <b>sei la cosa più bella</b> che mi sia capitata.
+        <br/>Ora preparati… perché ti devo un bacio infinito 😘
+      </div>
+
+      <div class="cta">
+        <button class="yes" id="btnMore">Altra sorpresa ✨</button>
+        <button class="ghost" id="btnRestart">Ricomincia 🔁</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  // Personalizza qui
+  const NAME = "Katiuscia"; // <-- cambia nome se vuoi
+  $("qTitle").textContent = `Ciao ${NAME}, vuoi essere la mia San Valentina? 💘`;
+
+  const heartsWrap = $("hearts");
+  const toast = $("toast");
+  const btnNo = $("btnNo");
+  const btnYes = $("btnYes");
+  const arena = $("arena");
+
+  function showToast(t){
+    if(!toast) return;
+    toast.textContent = t;
+    toast.classList.add("show");
+    setTimeout(()=>toast.classList.remove("show"), 1400);
+  }
+
+  function spawnHeart(burst=false){
+    if(!heartsWrap) return;
+    const h = document.createElement("div");
+    h.className = "heart";
+    const size = 10 + Math.random()*18;
+    h.style.width = h.style.height = size + "px";
+    h.style.left = (Math.random()*100) + "vw";
+    h.style.background = Math.random() > 0.5 ? "#ff2d55" : "#7c3aed";
+    h.style.animationDuration = (burst ? (2.8 + Math.random()*2.2) : (4.2 + Math.random()*5.3)) + "s";
+    h.style.opacity = (0.35 + Math.random()*0.65).toFixed(2);
+    heartsWrap.appendChild(h);
+    setTimeout(()=>h.remove(), 9000);
+  }
+
+  // cuori soft sempre
+  setInterval(()=>spawnHeart(false), 220);
+
+  // utility overlap
+  function overlap(r1, r2){
+    return !(r2.left > r1.right ||
+             r2.right < r1.left ||
+             r2.top > r1.bottom ||
+             r2.bottom < r1.top);
+  }
+
+  // NO scappa (anche su iPhone) e NON deve coprire il SÌ
+  function runAway(){
+    if(!btnNo || !arena || !btnYes) return;
+
+    const rectArena = arena.getBoundingClientRect();
+    const bw = btnNo.offsetWidth;
+    const bh = btnNo.offsetHeight;
+
+    // rect del SÌ (da evitare)
+    const yesRect = btnYes.getBoundingClientRect();
+
+    btnNo.style.position = "absolute";
+
+    const pad = 10;
+    let x, y, tries = 0;
+
+    do {
+      x = pad + Math.random() * (rectArena.width - bw - pad*2);
+      y = 60 + Math.random() * (rectArena.height - bh - 70);
+
+      btnNo.style.left = x + "px";
+      btnNo.style.top  = y + "px";
+
+      const noRect = btnNo.getBoundingClientRect();
+      tries++;
+
+      if(!overlap(noRect, yesRect)) break;
+    } while(tries < 25);
+
+    const lines = ["AHAHA NOPE 😈","Non oggi 😌","Riprova 😂","Sei sicura? 😏","Impossibile 🙈"];
+    showToast(lines[Math.floor(Math.random()*lines.length)]);
+  }
+
+  // eventi desktop
+  btnNo.addEventListener("mouseenter", runAway);
+  btnNo.addEventListener("click", (e)=>{ e.preventDefault(); runAway(); });
+
+  // eventi iPhone / touch
+  btnNo.addEventListener("touchstart", (e)=>{ e.preventDefault(); runAway(); }, { passive:false });
+
+  // YES => successo
+  function success(){
+    $("question").style.display = "none";
+    $("success").style.display = "block";
+    showToast("Brava 😍 scelta giusta!");
+    for(let i=0;i<30;i++) setTimeout(()=>spawnHeart(true), i*35);
+  }
+
+  // click + touch per iPhone
+  btnYes.addEventListener("click", success);
+  btnYes.addEventListener("touchend", (e)=>{ e.preventDefault(); success(); }, { passive:false });
+
+  // extra sorpresa
+  $("btnMore").addEventListener("click", () => {
+    const extras = [
+      `Ok ora è ufficiale: ${NAME} + Ale = 💍 (scherzo… o forse no 😏)`,
+      `Sei la mia persona preferita. Ti porto dove vuoi… basta che ci sei tu ❤️`,
+      `Hai appena sbloccato il premio: “Coccole illimitate” 🧸✨`,
+      `PS: ti ho pensata tutto il giorno. (E anche ieri. E domani.) 🥹`,
+      `Ufficiale: sei la mia scelta migliore. Sempre. ❤️`
+    ];
+    $("extra").innerHTML = extras[Math.floor(Math.random()*extras.length)];
+    for(let i=0;i<22;i++) setTimeout(()=>spawnHeart(true), i*30);
+    showToast("✨ Sorpresa sbloccata!");
+  });
+
+  // restart
+  $("btnRestart").addEventListener("click", () => location.reload());
+
+  // IMPORTANT: tolto il runAway automatico iniziale perché su iPhone spesso copre il SÌ
+  // Se lo vuoi comunque, dimmelo e lo rimettiamo in modo safe.
+</script>
+</body>
+</html>
+
+
